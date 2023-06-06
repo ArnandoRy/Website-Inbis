@@ -1,0 +1,78 @@
+<?php
+// Koneksi ke database
+$host = "localhost";
+$username = "root";
+$password = "";
+$database = "inbis";
+
+$conn = mysqli_connect($host, $username, $password, $database);
+
+if (!$conn) {
+    die("Koneksi gagal: " . mysqli_connect_error());
+}
+
+// Query untuk mengambil data gambar
+$query = "SELECT * FROM Artikel LIMIT 3 OFFSET 0" ;
+$result = mysqli_query($conn, $query);
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<section class="artikel view" id="artikel">
+      <div class="main">
+        <h2><span>A</span>rtikel</h2>
+        <h6>Lorem ipsum dolor sit amet consectetur adipisicing elit.</h6>
+      </div>
+      <div class="content">
+        <!-- <div class="frame">
+          <div class="box">
+            <img src="img/artikel1.jpeg" alt="">
+          </div>
+          <p class="date">09 Mar 2023</p>
+          <div class="title">Memulai bisnis</div>
+          <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
+        </div> -->
+        <?php
+    // Menampilkan gambar
+    while ($row = $result->fetch_assoc()) {
+      
+      $imageData = $row['picture'];
+      $imageType = 'image/jpeg'; // Change the image type as per your data
+      $dateFromDatabase = $row['date'];
+
+      // Step 2: Convert the date to Indonesian format
+      $indonesianDate = date('d F Y', strtotime($dateFromDatabase));
+      echo ' <div class="frame">';
+      echo '<div class="box">';
+      echo '<img src="data:' . $imageType . ';base64,' . base64_encode($imageData) . '" alt="Image">';
+      echo '</div>';
+      echo '<p class="date">' . $indonesianDate . '</p>';
+      echo '<div class="title">' . $row['title'] . '</div>';
+      echo '<p>' . $row['content'] . '</p>';
+      // You can add more data fields as per your database structure
+      echo '</div>';
+  }
+
+// Step 4: Close the connection
+$conn->close();
+
+    ?>
+      
+      </div>
+      <div class="lainnya">
+        <a href="lainya.html">Lainnya...</a>
+      </div>
+      
+    </section>
+
+</body>
+</html>
+
